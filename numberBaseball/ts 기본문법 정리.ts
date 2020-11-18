@@ -47,3 +47,19 @@ let hello: number = 222;
 
 const div = document.createElement('div');
 const div2 = div as HTMLDivElement;
+
+// 함수 오버로딩
+const a = (b?: string) => {
+  console.log('hi');
+}
+a();
+a('b');
+
+// 위 처럼 매개변수가 비슷하거나 옵셔널이 아닌 완전 다른 애들이 들어오는 경우엔 interface를 사용해 오버로딩 할 수 있다.
+interface aa {
+  bb(a: string, b: string): void;
+  bb(a: number[], b: number): void;
+}
+
+// interface
+// 객체의 타입을 인터페이스를 둠
