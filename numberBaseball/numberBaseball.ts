@@ -1,38 +1,62 @@
-let str: string = 'hello';
-let arr: number[] = [1, 2, 3];
-let arr2: Array<number> = [1, 2, 3];
-let arr3: [boolean, number, string] = [true, 1, 'hello'];
-let arr4: [1, 2, 3] = [1, 2, 3];
-let arr5: readonly [string] = ['hello'];
-let arr6 = [1, 2, 3] as const;
+const { body } = document;
+console.log(body);
+let candidate: number[];
+let array: number[] = [];
 
-const obj = {};
-// obj = 'hello' 불가
-// obj.a = 'hello' 가능
-const obj2 = {} as const;
-// obj2 = 'hello' 불가
-// obj2.a = 'hello' 불가능
-//프로퍼티까지 못바꾸게 할 수 있음
-
-const obj3: { a: number, b: string } = { a: 1, b: '2' };
-const obj4: { a: number, b?: string } = { a: 2 }; //? 있을 수도 있고 없을 수도 있고
-
-enum Color { Red, Green, Blue }
-Color['Red'] === 0;
-Color[0] === 'Red';
-Color['Green'] === 1;
-Color[1] === 'Green';
-Color['Blue'] === 2;
-Color[2] === 'Blue';
-
-
-const add = (a: number, b: number): number => {
-  return a + b;
-}
-
-//하이오더펑션
-const add2 = (a: number, b: number): (c: number) => number => {
-  return (c: number) => {
-    return 3;
+const chooseNumber = () => {
+  candidate = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  array = [];
+  for (let i = 0; i < 4; i++) {
+    const chosen = candidate.splice(Math.floor(Math.random() * (9 - i)), 1)[0];
+    array.push(chosen);
   }
 }
+chooseNumber();
+console.log(array);
+const result = document.createElement('h1');
+body.append(result);
+const form = document.createElement('form');
+body.append(form);
+const input = document.createElement('input');
+form.append(input);
+input.type = 'text';
+input.maxLength = 4;
+const button = document.createElement('button');
+button.textContent = '입력!';
+form.append(button);
+
+let wrongCount = 0;
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const answer = input.value;
+  if (answer === array.join('')) {
+    result.textContent = '홈런';
+    input.value = '';
+    input.focus();
+    chooseNumber();
+    wrongCount = 0;
+  } else {
+    const answerArray = answer.split('');
+    let strike = 0;
+    let ball = 0;
+    wrongCount += 1;
+    if (wrongCount > 10) {
+      result.textContent = `10번 넘게 틀려서 실패! 답은 ${array.join(',')} 였습니다!`;
+      input.value = '';
+      input.focus();
+      chooseNumber();
+      wrongCount = 0;
+    } else {
+      for (let i = 0; i < answer.length; i++) {
+        if (Number(answerArray[i]) === array[i]) {
+          strike++;
+        } else if (array.indexOf(Number(answerArray[i])) > -1) {
+          ball++;
+        }
+      }
+      result.textContent = strike + '스트라이크 ' + ball + '볼 입니다.';
+      input.value = '';
+      input.focus();
+    }
+  }
+})
