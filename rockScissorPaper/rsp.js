@@ -14,6 +14,7 @@ var computerChoice = function (imgCoords) {
     return Object.keys(rsp).find(function (k) { return rsp[k] === imgCoords; }); //타입 시스템에선 undefined가 나올 수 있다고 하지만 내가 확신할 수 있을 때 Type 'undefined' is not assignable to type 'ROCK | SCISSORS | PAPER'. 근디 어째 느낌표 빼도 에러가 안나냐
 };
 var interval;
+var point = 0;
 document.querySelectorAll('.btn').forEach(function (btn) {
     btn.addEventListener('click', function (e) {
         clearInterval(interval);
@@ -27,10 +28,13 @@ document.querySelectorAll('.btn').forEach(function (btn) {
         }
         else if ([-1, 2].includes(diff)) {
             console.log('이김');
+            point++;
         }
         else {
             console.log('졌음');
+            point--;
         }
+        document.querySelector('#point').textContent = String(point);
     });
 });
 function intervalMaker() {

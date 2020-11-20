@@ -23,6 +23,7 @@ const computerChoice = (imgCoords: RSP[keyof RSP]): keyof RSP => {
 }
 
 let interval: number;
+let point: number = 0;
 document.querySelectorAll('.btn').forEach((btn) => {
   btn.addEventListener('click', function (this: HTMLButtonElement, e: Event) { //화살표 함수를 쓰는 경우 this를 사용하려면 매개변수로 this 를 넘겨줘야 함, this === btn
     clearInterval(interval);
@@ -35,10 +36,13 @@ document.querySelectorAll('.btn').forEach((btn) => {
       console.log('ㅂㅣ김');
     } else if ([-1, 2].includes(diff)) {
       console.log('이김');
+      point++;
     } else {
       console.log('졌음');
+      point--;
     }
-  })
+    (document.querySelector('#point') as HTMLDivElement)!.textContent = String(point);
+  });
 });
 
 function intervalMaker() {
