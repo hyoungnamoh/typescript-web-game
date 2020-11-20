@@ -106,3 +106,23 @@ const hi2: Hello2 = 'hello2';
 
 // keyof interface명 === interface 키값들을 가져옴
 // interface명[keyof interface명] === interface 값들을 가져올 수 있음
+
+// 이벤트 함수에서 이벤트를 거는 대상 자체를 넘기려면 일반함수에선 this를 넣어주고 타입을 명시해줌. 이 this가 이벤트 대상이 됨 이렇게 해야 this의 타입추론이 명확하게 됨
+document.querySelector('#btn')?.addEventListener('click', function (this: HTMLButtonElement) {
+  // this === document.querySelector('#btn')
+});
+
+// 리턴값이 string | null 이런애들의 경우 null이 올 수도 있다고 에러잡히는 경우가 있는데 이럴 경우
+if (document.querySelector('#btn')) { // 이런식으로 잡아줄 수 있음
+  let btn = document.querySelector('#btn');
+} // 이렇게 해도 안되는 경우가 있는데 이럴 땐
+let btn = document.querySelector('#btn'); // 이런식으로 변수에 담아서 사용하면 잡힌다,, 이럴빠엔 느낌표 사용하는것도 고려해보자..
+if (btn) {
+  let btn2 = btn;
+}
+
+// 실행 시
+// tsc 파일명.ts -w 이런식으로 파일을 명시하면 tsconfig가 적용되지 않음
+// => npx tsc -w 이렇게 전체를 그냥 tsc하게 함
+
+
