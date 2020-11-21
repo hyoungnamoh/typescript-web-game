@@ -125,4 +125,22 @@ if (btn) {
 // tsc 파일명.ts -w 이런식으로 파일을 명시하면 tsconfig가 적용되지 않음
 // => npx tsc -w 이렇게 전체를 그냥 tsc하게 함
 
+// 제네릭
+// 들어오는 타입의 위치를 정해주고 싶을 때 사용, 짝 맞추기
+type T = string | number;
 
+interface obj<T> {
+  add: (a: T, b: T) => T;
+}
+
+const g1: obj<number> = {
+  add: (a, b) => a + b,
+}
+const g2: obj<string> = {
+  add: (a, b) => a + b,
+}
+
+g1.add(1, 2);
+g2.add('a', 'b');
+g1.add(1, 'a');
+g2.add('1', 2);
