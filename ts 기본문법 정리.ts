@@ -144,3 +144,26 @@ g1.add(1, 2);
 g2.add('a', 'b');
 g1.add(1, 'a');
 g2.add('1', 2);
+
+// 제네릭에 넣는 타입에 제약을 둘 때 extends를 쓸 수 있음
+interface extObj<T extends string> { //string과 string을 extends한 타입만 들어오게
+  add: (a: T, b: T) => T;
+}
+
+const extObj1: extObj<number> = {
+  add: (a, b) => a + b,
+}
+const extObj2: extObj<string> = {
+  add: (a, b) => a + b,
+};
+
+[1, 'a', 2, null, undefined].forEach(element => {
+
+});
+
+// 구조분해할당 했을 경우엔 타입을 객체 뒤에 써줘야 함 +추가로 인자에 각 벨류를 하나씩 넣는거보다 저렇게 객체 형태로 넣는게 이 값이 어떤값인지 힌트를 줄 수 있고 가독성이 한결 좋아짐
+const createDeck = ({ mine, count }: { mine: boolean, count: number }) => {
+  
+}
+
+

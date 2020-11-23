@@ -4,71 +4,27 @@
 //   hp: number;
 //   cost: number;
 // }
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-// 기존 자바스크립트 방식 클래스
-// class Card {
-//   constructor(hero, mine) {
-//     if (hero) {
-//       this.att = Math.ceil(Math.random() * 2);
-//       this.hp = Math.ceil(Math.random() * 5) + 25;
-//       this.hero = true;
-//       this.field = true;
-//     } else {
-//       this.att = Math.ceil(Math.random() * 5);
-//       this.hp = Math.ceil(Math.random() * 5);
-//       this.cost = Math.floor((this.att + this.hp) / 2);
-//     }
-//     if (mine) {
-//       this.mine = true;
-//     }
-//   }
-// }
-var Card = /** @class */ (function () {
-    function Card(hero, mine) {
-        // private class 안에서만 접근 가능
-        // protected 상속받은 친구들까지 접근 가능
-        // public 어떤 인스턴스에서도 접근 가능
-        this.att = 0;
-        this.hp = 0;
-        this.cost = 0;
-        if (hero) {
-            return new Hero(mine);
-        }
-        else {
-            this.att = Math.ceil(Math.random() * 5);
-            this.hp = Math.ceil(Math.random() * 5);
-            this.cost = Math.floor((this.att + this.hp) / 2);
-        }
-        if (mine) {
-            this.mine = true;
-        }
-    }
-    return Card;
-}());
-var Hero = /** @class */ (function (_super) {
-    __extends(Hero, _super);
+var Hero = /** @class */ (function () {
     function Hero(mine) {
-        var _this = _super.call(this, true, mine) || this;
-        _this.att = Math.ceil(Math.random() * 2);
-        _this.hp = Math.ceil(Math.random() * 5) + 25;
-        _this.hero = true;
-        _this.field = true;
-        return _this;
+        this.field = true;
+        this.mine = mine;
+        this.att = Math.ceil(Math.random() * 2);
+        this.hp = Math.ceil(Math.random() * 5) + 25;
+        this.hero = true;
+        this.field = true;
     }
     return Hero;
-}(Card));
+}());
+var Sub = /** @class */ (function () {
+    function Sub(mine) {
+        this.field = false;
+        this.mine = mine;
+        this.att = Math.ceil(Math.random() * 2);
+        this.hp = Math.ceil(Math.random() * 5) + 25;
+        this.cost = Math.floor((this.att + this.hp) / 2);
+    }
+    return Sub;
+}());
 var opponent = {
     // hero: document.getElementById('rival-hero'),
     // deck: document.getElementById('rival-deck'),
@@ -95,3 +51,70 @@ var me = {
     chosenCard: null,
     chosenCardData: null
 };
+var turnButton = document.getElementById('turn-btn');
+var turn = true; // true 내 턴
+var initiate = function () {
+    [opponent, me].forEach(function (item) {
+        item.deckData = [];
+        item.heroData = null;
+        item.fieldData = [];
+        item.chosenCard = null;
+        item.chosenCardData = null;
+    });
+    createDeck({ mine: true, count: 5 });
+    createDeck({ mine: false, count: 5 });
+    createHero({ mine: true });
+    createHero({ mine: false });
+    redrawScreen({ mine: true });
+    redrawScreen({ mine: false });
+};
+var redrawDeck = function (target) {
+    target.deck.innerHTML = '';
+    target.deckData.forEach(function (data) {
+        connectCardDOM({ data: data, DOM: target.deck });
+    });
+};
+var createDeck = function (_a) {
+    var mine = _a.mine, count = _a.count;
+    var player = mine ? me : opponent;
+    for (var i = 0; i < count; i++) {
+        player.deckData.push(new Sub(mine));
+    }
+    redrawDeck(player);
+};
+var createHero = function (_a) {
+    var mine = _a.mine;
+    var player = mine ? me : opponent;
+    player.heroData = new Hero(mine);
+    connectCardDOM({ data: player.heroData, DOM: player.hero, hero: true });
+};
+var connectCardDOM = function (_a) {
+    var data = _a.data, DOM = _a.DOM, _b = _a.hero, hero = _b === void 0 ? false : _b;
+    var cardEl = document.querySelector('.card-hidden .card').cloneNode(true);
+    cardEl.querySelector('.card-att').textContent = String(data.att);
+    cardEl.querySelector('.card-hp').textContent = String(data.att);
+    if (hero) {
+        cardEl.querySelector('.card-cost').style.display = 'none';
+        var name_1 = document.createElement('div');
+        name_1.textContent = '영웅';
+        cardEl.appendChild(name_1);
+    }
+    else {
+        cardEl.querySelector('.card-cost').textContent = String(data.cost);
+    }
+    DOM.appendChild(cardEl);
+};
+var redrawScreen = function (_a) {
+    var mine = _a.mine;
+    var player = mine ? me : opponent;
+    redrawHero(player);
+};
+var redrawHero = function (target) {
+    // hero null error 잡기
+    if (!target.heroData) {
+        throw new Error('히어로 데이터가 없습니당');
+    }
+    target.hero.innerHTML = '';
+    connectCardDOM({ data: target.heroData, DOM: target.hero, hero: true });
+};
+initiate();

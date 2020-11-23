@@ -128,3 +128,80 @@ const me: Player = {
   chosenCard: null,
   chosenCardData: null,
 };
+
+const turnButton = document.getElementById('turn-btn') as HTMLButtonElement;
+let turn = true; // true 내 턴
+
+const initiate = () => {
+  [opponent, me].forEach((item) => {
+    item.deckData = [];
+    item.heroData = null;
+    item.fieldData = [];
+    item.chosenCard = null;
+    item.chosenCardData = null;
+  });
+  createDeck({ mine: true, count: 5 });
+  createDeck({ mine: false, count: 5 });
+  createHero({ mine: true });
+  createHero({ mine: false });
+  redrawScreen({ mine: true });
+  redrawScreen({ mine: false });
+}
+
+const redrawDeck = (target: Player) => {
+  target.deck.innerHTML = '';
+  target.deckData.forEach(data => {
+    connectCardDOM({ data, DOM: target.deck });
+  });
+}
+
+const createDeck = ({ mine, count }: { mine: boolean, count: number }) => {
+  const player = mine ? me : opponent;
+  for (let i: number = 0; i < count; i++) {
+    player.deckData.push(new Sub(mine));
+  }
+  redrawDeck(player);
+}
+
+const createHero = ({ mine }: { mine: boolean }) => {
+  const player = mine ? me : opponent;
+  player.heroData = new Hero(mine);
+  connectCardDOM({ data: player.heroData, DOM: player.hero, hero: true });
+}
+
+interface connect {
+  data: Card,
+  DOM: HTMLDivElement,
+  hero?: boolean
+}
+const connectCardDOM = ({ data, DOM, hero = false }: connect) => {
+  const cardEl = document.querySelector('.card-hidden .card')!.cloneNode(true) as HTMLDivElement;
+  cardEl.querySelector('.card-att')!.textContent = String(data.att);
+  cardEl.querySelector('.card-hp')!.textContent = String(data.att);
+
+  if (hero) {
+    (cardEl.querySelector('.card-cost') as HTMLDivElement).style.display = 'none';
+    const name = document.createElement('div');
+    name.textContent = '영웅';
+    cardEl.appendChild(name);
+  } else {
+    cardEl.querySelector('.card-cost')!.textContent = String(data.cost);
+  }
+  DOM.appendChild(cardEl);
+}
+
+const redrawScreen = ({ mine }: { mine: boolean }) => {
+  const player = mine ? me : opponent;
+  redrawHero(player);
+}
+
+const redrawHero = (target: Player) => {
+  // hero null error 잡기
+  if (!target.heroData) {
+    throw new Error('히어로 데이터가 없습니당');
+  }
+  target.hero.innerHTML = '';
+  connectCardDOM({ data: target.heroData, DOM: target.hero, hero: true });
+}
+
+initiate();
