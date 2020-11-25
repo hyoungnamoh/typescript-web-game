@@ -163,7 +163,63 @@ const extObj2: extObj<string> = {
 
 // 구조분해할당 했을 경우엔 타입을 객체 뒤에 써줘야 함 +추가로 인자에 각 벨류를 하나씩 넣는거보다 저렇게 객체 형태로 넣는게 이 값이 어떤값인지 힌트를 줄 수 있고 가독성이 한결 좋아짐
 const createDeck = ({ mine, count }: { mine: boolean, count: number }) => {
-  
+
 }
 
+// 타입가드
+// 타입가드를 사용해 as를 사용하는 거 보다 더 자연스럽게 타입을 좁혀줄 수 있음
+const isSub = (data: Card): data is Sub => {
+  if (data.cost) {
+    return true;
+  }
+  return false;
+}
+
+// if (isSub(data as Sub) && data.mine && !data.field) {
+if (isSub(data) && data.mine && !data.field) {
+  ...
+}
+
+// script와 module 차이
+// module === 다른 파일에서도 사용할 수 있음
+<script src = '' > </script> / / script
+
+const hello2 = 'isModule'; //node에서 module 지정, 
+module.exports = hello2;
+const module = requeire('./isModule');
+
+//commonjs 문법(node 표준)
+// exports.a 할 때 exports와 module.exports는 완전히 똑같은 객체임
+// 띠리서 한 js 페이지 안에서 하나만 사용하도록 함
+// 마지막에 module.exports = {} 해버리면 그 전에 객체로 넣었던게 덮혀질 수도 있음
+// 이걸 극복하고자 es2015에 default가 추가로 생김
+
+// module.exports
+module.exports = {
+  a: 'a',
+  b: 'b',
+}
+
+// 객체 exports (es2015 이전)
+exports.a = 'b'; //exports 객체에 a, b 추가하고 다른 곳에서 불러쓰기
+exports.b = false;
+const { a, b } = requeire('./module');
+
+// 객체 exports (es2015 이후)
+const a = 'b';
+const b = false;
+export { a, b };
+import { a, b } from './module';
+export default const fn = () => { // 최신문법으로 앞에 export 안 덮고 export 가능해짐, export !== export default
+
+};
+import fn from './module';
+
+// typescript에서 commonjs 방식의 module은
+// import hi from './module' 이 아닌
+// import * as hi from './module' 이렇게 가져와서 사용하는 게 맞음
+// exModuleInterop 을 true로 설정 해 * as 쓰지않고 사용할 수 있지만 그닥 좋은 선택은 아님.
+
+
+//es6 module import, export
 
