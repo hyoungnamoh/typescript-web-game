@@ -84,9 +84,23 @@ class Sub implements Card {
   constructor(mine: boolean) {
     this.mine = mine;
     this.att = Math.ceil(Math.random() * 2);
-    this.hp = Math.ceil(Math.random() * 5) + 25;
+    this.hp = Math.ceil(Math.random() * 5);
     this.cost = Math.floor((this.att + this.hp) / 2);
   }
+}
+
+// 타입가드
+const isSub = (data: Card): data is Sub => {
+  if (data.cost) {
+    return true;
+  }
+  return false;
+}
+const isHero = (data: Card): data is Hero => {
+  if (data.hero) {
+    return true;
+  }
+  return false;
 }
 
 
@@ -154,6 +168,12 @@ const redrawDeck = (target: Player) => {
     connectCardDOM({ data, DOM: target.deck });
   });
 }
+const redrawField = (target: Player) => {
+  target.field.innerHTML = '';
+  target.fieldData.forEach(data => {
+    connectCardDOM({ data, DOM: target.field });
+  });
+}
 
 const createDeck = ({ mine, count }: { mine: boolean, count: number }) => {
   const player = mine ? me : opponent;
@@ -167,6 +187,23 @@ const createHero = ({ mine }: { mine: boolean }) => {
   const player = mine ? me : opponent;
   player.heroData = new Hero(mine);
   connectCardDOM({ data: player.heroData, DOM: player.hero, hero: true });
+}
+
+const deckToField = ({ data }: { data: Sub }) => {
+  const target = turn ? me : opponent;
+  const currentCost = Number(target.cost.textContent);
+  if (currentCost < data.cost) {
+    alert('코스트가 모자릅니다.');
+    return true;
+  }
+  data.field = true;
+  const idx = target.deckData.indexOf(data);
+  target.deckData.splice(idx, 1);
+  target.fieldData.push(data);
+  redrawDeck(target);
+  redrawField(target);
+  target.cost.textContent = String(currentCost - data.cost);
+  return true;
 }
 
 interface connect {
@@ -187,6 +224,13 @@ const connectCardDOM = ({ data, DOM, hero = false }: connect) => {
   } else {
     cardEl.querySelector('.card-cost')!.textContent = String(data.cost);
   }
+  cardEl.addEventListener('click', () => {
+    if (isSub(data) && data.mine && !data.field) {
+      if (deckToField({ data })) { //쫄병 하나 덱에서 뽑았으면 뽑은 곳 하나 다시 추가
+        createDeck({ mine: turn, count: 1 });
+      }
+    }
+  });
   DOM.appendChild(cardEl);
 }
 
