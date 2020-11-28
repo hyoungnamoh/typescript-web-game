@@ -1,3 +1,7 @@
+import canUseDom from 'can-use-dom';
+window.hello = 'a';
+const error = new Error();
+error.code;
 // interface Card {
 //   att: number;
 //   hp: number;

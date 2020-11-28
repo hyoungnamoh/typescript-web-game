@@ -223,3 +223,66 @@ import fn from './module';
 
 //es6 module import, export
 
+// dts 유형
+// 1. typescript로 만들어진 패키지
+// 2. js로 만들었지만 index.d.ts 파일을 제공하는 패키지
+// 3. definitlyTyped에서 d.ts파일을 제공하는 패키지 npm install @types/패키지명
+// 4. definitlyTyped에 없는 패키지
+// 5. type을 틀리게 지정해놓은 패키지
+
+// 4번의 경우 직접 만들어 줄 수 있음. 내가 필요한 부분만 type을 만들어쓰면 됨
+// type만들어주기
+// 1. types 폴더에 d.ts 파일 생성
+// 2. declare module '패키지명' { const canUseDom: Boolean; export default canUseDom}
+// 3. ts.config.json 파일 typeRoots 옵션에 types 폴더 경로 추가
+// 4. includes 없애던가 추가해줌
+
+// 전역객체에 값을 할당하고싶은 경우
+// 1. types폴더에 전역객체에 타입 정해줄 d.ts 파일 생성
+// 2. declare global { interface: Window { hello3: string; } } 쓰고싶은 거 타입 정해줌
+// 3. global 객체를 확장하려면 external 모듈이거나 ambiant 모듈이어야 함
+// 4. 이걸 가장 쉽게 처리하는 방법은 파일 최상단에 export { } 를 넣어 줘 얘가 external모듈인척 하게 함
+//   (external module === import, export / internal module === namaspace / embiant module 남의 패키지를 내가 d.ts 로 타입 정해주는 거(declare module 'ddd' {}))
+
+// intersection &
+// |(파이프)같은 연산자? 둘 다 충족해야 함
+// interface-interface, interface-typealias, typealias-typealias 사용 가능
+interface A {
+  hello: true,
+}
+
+interface B {
+  bye: true,
+}
+
+const a: A = {
+  hello: true,
+}
+
+const b: B = {
+  bye: true,
+}
+//intersection
+const c: A & B {
+  hello: true,
+  bye: true,
+}
+
+// Utility
+// Partial
+interface AA {
+  a: '1',
+  b: 2,
+  c: true,
+}
+// Partial을 사용하면 모든 조건을 충족하지 않고 일부만 사용하거나 바꿀 수 있음
+const aa: Partial<AA> = {
+  a: '1',
+  b: 2
+}
+// Readonly 전체 값을 readonly
+const bb: Readonly<AA> = {
+  a: '1',
+  b: 2,
+  c: true,
+}   
