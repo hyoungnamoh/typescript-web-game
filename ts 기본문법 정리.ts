@@ -285,4 +285,11 @@ const bb: Readonly<AA> = {
   a: '1',
   b: 2,
   c: true,
-}   
+}
+
+// optional chaning
+// 확신을 못가질 때 사용 !. 연산자와 상반
+const oc1 = document.querySelector('#wrapper')?.innerHTML; // document.querySelector('#wrapper')가 있으면 innerHTML을 할당
+const oc2 = { b: () => { } };
+document.querySelector('#wrapper')?.innerHTML = ''; // X -> ?. 연산자는 식의 왼쪽항에 넣을 수 없음
+oc2.b?.() // 함수사용 시 주의사항 ?.가 하나의 연산자이므로 뒤에 . 꼭 붙이기
